@@ -34,7 +34,7 @@ function getModal(data) {
                         <p class="modal-text">${data.email}</p>
                         <p class="modal-text cap">${data.location.city}</p>
                         <hr>
-                        <p class="modal-text">(555) 555-5555</p>
+                        <p class="modal-text">${data.cell}</p>
                         <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.city}, ${data.location.state}, ${data.location.postcode}</p>
                         <p class="modal-text">Birthday: 10/21/2015</p>
                     </div>
@@ -42,8 +42,9 @@ function getModal(data) {
                 `;
     return html
 }
-fetchData('https://randomuser.me/api/?results=12&?inc=name,location,email,dob,cell,picture')
+fetchData('https://randomuser.me/api/?results=12&?nat=gb')
 .then(data => data.results.map(profile => {
+    console.log(profile)
     getHTML(profile)
     modalArr.push(getModal(profile))
     return modalArr
