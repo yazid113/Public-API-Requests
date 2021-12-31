@@ -1,3 +1,4 @@
+let modalArr= []
 const gallery = document.querySelector('#gallery')
 const body = document.querySelector('body')
 const closeBtn =document.querySelector('#modal-close-btn')
@@ -10,7 +11,7 @@ function getHTML(data) {
     const html = `
     <div class="card">
                     <div class="card-img-container">
-                        <img class="card-img" src=${data.picture.thumbnail} alt="profile picture">
+                        <img class="card-img" src=${data.picture.medium} alt="profile picture">
                     </div>
                     <div class="card-info-container">
                         <h3 id="name" class="card-name cap">${data.name.first} ${data.name.last}</h3>
@@ -28,7 +29,7 @@ function getModal(data) {
                 <div class="modal">
                     <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                     <div class="modal-info-container">
-                        <img class="modal-img" src=${data.picture.thumbnail} alt="profile picture">
+                        <img class="modal-img" src=${data.picture.large} alt="profile picture">
                         <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
                         <p class="modal-text">${data.email}</p>
                         <p class="modal-text cap">${data.location.city}</p>
@@ -39,22 +40,30 @@ function getModal(data) {
                     </div>
                 </div>
                 `;
-    gallery.insertAdjacentHTML('afterend',html)
-    
+    return html
 }
-
 fetchData('https://randomuser.me/api/?results=12&?inc=name,location,email,dob,cell,picture')
 .then(data => data.results.map(profile => {
     getHTML(profile)
-    body.addEventListener('click',(e)=>{
-        if (e.target.classList.contains('card') ||e.target.classList.contains('card-img') ||e.target.classList.contains('card-img-container')) {
-          getModal(profile)  
-        }
-        else if (e.target.innerText === 'X'){
-            document.querySelector("body > div.modal-container > div").parentNode.remove()
-        }
-    })
+    modalArr.push(getModal(profile))
+    return modalArr
   }))
 
-
-
+body.addEventListener('click',(e)=>{
+    for (let i = 0; i < gallery.children.length; i++) {
+      if (e.target === gallery.children[i] 
+        || e.target === gallery.children[i].firstElementChild 
+        || e.target === gallery.children[i].firstElementChild.firstElementChild
+        || e.target === gallery.children[i].firstElementChild.nextElementSibling
+        || e.target === gallery.children[i].firstElementChild.nextElementSibling.firstElementChild
+        || e.target === gallery.children[i].firstElementChild.nextElementSibling.firstElementChild.nextElementSibling
+        || e.target === gallery.children[i].firstElementChild.nextElementSibling.lastElementChild){
+        console.log(e.target)
+        console.log(gallery.children[i].firstElementChild.nextElementSibling)
+        gallery.insertAdjacentHTML('afterend',modalArr[11-i]) 
+        }
+    }
+    if(e.target.textContent === 'X'){
+        document.querySelector("body > div.modal-container > div").parentNode.remove()
+    } 
+})
